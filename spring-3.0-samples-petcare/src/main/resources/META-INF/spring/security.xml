@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+	<http use-expressions="true">
+		<!-- Authentication policy -->
+		<openid-login login-page="/users/signin" login-processing-url="/users/signin/authenticate" user-service-ref="userService" authentication-failure-handler-ref="authenticationFailureHandler" />
+		<logout logout-url="/users/signout" />
+		<!-- Authorization policy -->
+		<intercept-url pattern="/users/signin" filters="none" />
+		<intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/resources/**" access="permitAll" />
+		<intercept-url pattern="/**" access="isAuthenticated()" />
+	</http>
+
+	<authentication-manager />
+
+	<beans:bean id="authenticationFailureHandler" class="org.springframework.samples.petcare.users.PetcareAuthenticationFailureHandler" />
+		
+	<beans:bean id="userService" class="org.springframework.samples.petcare.users.PetcareUserService" />
+
+</beans:beans>
